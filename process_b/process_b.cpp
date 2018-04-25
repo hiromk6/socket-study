@@ -20,6 +20,8 @@ int main (int argc, char * argv[]) {
 
 	if ( argc != 3 ) {
 		fprintf(stderr, "argument count mismatch error.\n");
+		fprintf(stderr, "Usage:\n");
+		fprintf(stderr, "	command <IP Address> <port>\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -51,14 +53,16 @@ int main (int argc, char * argv[]) {
 
 	totalBytesRcvd = 0;	
 
-	while(totalBytesRcvd < MAX_MSGSIZE) {
+	send(sock, "abcde", sizeof("abcde"), 0);
 
+	while(totalBytesRcvd < MAX_MSGSIZE) {
 		if ((byteRcvd = recv(sock, recvBuffer, MSGSIZE, 0)) > 0 ){
+	printf ( "errno:'%d' byteRcvd:'%d'", errno, byteRcvd);
 			recvBuffer[byteRcvd] = '\0';
-			printf("%s", recvBuffer);
+			printf("recvBuffer:'%s'", recvBuffer);
 			totalBytesRcvd += byteRcvd;
 		} else if(byteRcvd == 0) {
-			perror("ERR_EMPTY_RESPONSE");
+			perror("ERR_EMPTY_RESPONSE:");
 			exit(EXIT_FAILURE);
 		} else {
 			perror("recv() failed.");

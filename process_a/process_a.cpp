@@ -16,9 +16,13 @@ int main (int argc, char * argv[]) {
 	struct sockaddr_in clientSocketAddr;
 	unsigned short serverPort;
 	unsigned int clientLen;
+	int ret;
+	char receiveBuffer[1000];
 
 	if ( argc != 2 ) {
 		fprintf(stderr, "argument count mismatch error.\n");
+		fprintf(stderr, "Usage:\n");
+		fprintf(stderr, "\tcommand <port>\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -58,6 +62,16 @@ int main (int argc, char * argv[]) {
 		}
 
 		printf("conected from %s.\n", inet_ntoa(clientSocketAddr.sin_addr));
+
+		while(1) {
+			ret = recv(clientSocket, receiveBuffer, sizeof(receiveBuffer), 0);
+//			ret = send(clientSocket, "abc", strlen("abc"), 0);
+			if ( ret < 0 ) {
+				printf("send_error '%d\n'", ret);
+			} else {
+				printf("%s\n", receiveBuffer);
+			}
+		}
 		close(clientSocket);
 	}
 
